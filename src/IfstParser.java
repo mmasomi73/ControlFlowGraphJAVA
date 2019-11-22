@@ -17,8 +17,8 @@ public class IfstParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, IF=15, THEN=16, ELSE=17, 
-		OR=18, AND=19, NOT=20, NEWLINE=21, INT=22, ID=23, WS=24;
+		T__9=10, T__10=11, T__11=12, T__12=13, IF=14, THEN=15, ELSE=16, OR=17, 
+		AND=18, NOT=19, NEWLINE=20, INT=21, ID=22, WS=23;
 	public static final int
 		RULE_prog = 0, RULE_ifSt = 1, RULE_elseSt = 2, RULE_bexp = 3, RULE_bterm = 4, 
 		RULE_bfactor = 5, RULE_relop = 6, RULE_st = 7, RULE_expr = 8, RULE_term = 9, 
@@ -33,17 +33,17 @@ public class IfstParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'NOT'", "'('", "')'", "'<'", "'>'", "'<>'", "'<='", "'>='", "'=='", 
-			"'='", "'*'", "'/'", "'+'", "'-'", "'if'", "'then'", "'else'", "'or'", 
-			"'and'", "'not'"
+			null, "'('", "')'", "'<'", "'>'", "'<>'", "'<='", "'>='", "'=='", "'='", 
+			"'*'", "'/'", "'+'", "'-'", "'if'", "'then'", "'else'", "'or'", "'and'", 
+			"'not'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, "IF", "THEN", "ELSE", "OR", "AND", "NOT", "NEWLINE", 
-			"INT", "ID", "WS"
+			null, null, "IF", "THEN", "ELSE", "OR", "AND", "NOT", "NEWLINE", "INT", 
+			"ID", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -433,6 +433,7 @@ public class IfstParser extends Parser {
 	}
 
 	public static class BfactorContext extends ParserRuleContext {
+		public TerminalNode NOT() { return getToken(IfstParser.NOT, 0); }
 		public BfactorContext bfactor() {
 			return getRuleContext(BfactorContext.class,0);
 		}
@@ -478,7 +479,7 @@ public class IfstParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(58);
-				match(T__0);
+				match(NOT);
 				setState(59);
 				bfactor();
 				}
@@ -487,11 +488,11 @@ public class IfstParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(60);
-				match(T__1);
+				match(T__0);
 				setState(61);
 				bexp(0);
 				setState(62);
-				match(T__2);
+				match(T__1);
 				}
 				break;
 			case 3:
@@ -547,7 +548,7 @@ public class IfstParser extends Parser {
 			{
 			setState(70);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << T__8))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -605,20 +606,20 @@ public class IfstParser extends Parser {
 				setState(72);
 				match(ID);
 				setState(73);
-				match(T__9);
+				match(T__8);
 				setState(74);
 				expr(0);
 				}
 				break;
-			case T__1:
+			case T__0:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(75);
-				match(T__1);
+				match(T__0);
 				setState(76);
 				expr(0);
 				setState(77);
-				match(T__2);
+				match(T__1);
 				}
 				break;
 			default:
@@ -698,7 +699,7 @@ public class IfstParser extends Parser {
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(85);
 					_la = _input.LA(1);
-					if ( !(_la==T__10 || _la==T__11) ) {
+					if ( !(_la==T__9 || _la==T__10) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
@@ -790,7 +791,7 @@ public class IfstParser extends Parser {
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(96);
 					_la = _input.LA(1);
-					if ( !(_la==T__12 || _la==T__13) ) {
+					if ( !(_la==T__11 || _la==T__12) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
@@ -852,15 +853,15 @@ public class IfstParser extends Parser {
 			setState(109);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case T__1:
+			case T__0:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(103);
-				match(T__1);
+				match(T__0);
 				setState(104);
 				expr(0);
 				setState(105);
-				match(T__2);
+				match(T__1);
 				}
 				break;
 			case ID:
@@ -935,7 +936,7 @@ public class IfstParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\32r\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\31r\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
 		"\f\t\f\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\5\4%\n\4\3\5\3"+
 		"\5\3\5\3\5\3\5\3\5\7\5-\n\5\f\5\16\5\60\13\5\3\6\3\6\3\6\3\6\3\6\3\6\7"+
@@ -943,24 +944,24 @@ public class IfstParser extends Parser {
 		"\7\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tR\n\t\3\n\3\n\3\n\3\n\3\n\3"+
 		"\n\7\nZ\n\n\f\n\16\n]\13\n\3\13\3\13\3\13\3\13\3\13\3\13\7\13e\n\13\f"+
 		"\13\16\13h\13\13\3\f\3\f\3\f\3\f\3\f\3\f\5\fp\n\f\3\f\2\6\b\n\22\24\r"+
-		"\2\4\6\b\n\f\16\20\22\24\26\2\5\3\2\6\13\3\2\r\16\3\2\17\20\2p\2\30\3"+
-		"\2\2\2\4\33\3\2\2\2\6$\3\2\2\2\b&\3\2\2\2\n\61\3\2\2\2\fF\3\2\2\2\16H"+
-		"\3\2\2\2\20Q\3\2\2\2\22S\3\2\2\2\24^\3\2\2\2\26o\3\2\2\2\30\31\5\4\3\2"+
-		"\31\32\7\2\2\3\32\3\3\2\2\2\33\34\7\21\2\2\34\35\5\b\5\2\35\36\7\22\2"+
-		"\2\36\37\5\20\t\2\37 \5\6\4\2 \5\3\2\2\2!\"\7\23\2\2\"%\5\20\t\2#%\3\2"+
-		"\2\2$!\3\2\2\2$#\3\2\2\2%\7\3\2\2\2&\'\b\5\1\2\'(\5\n\6\2(.\3\2\2\2)*"+
-		"\f\4\2\2*+\7\24\2\2+-\5\n\6\2,)\3\2\2\2-\60\3\2\2\2.,\3\2\2\2./\3\2\2"+
-		"\2/\t\3\2\2\2\60.\3\2\2\2\61\62\b\6\1\2\62\63\5\f\7\2\639\3\2\2\2\64\65"+
-		"\f\4\2\2\65\66\7\25\2\2\668\5\f\7\2\67\64\3\2\2\28;\3\2\2\29\67\3\2\2"+
-		"\29:\3\2\2\2:\13\3\2\2\2;9\3\2\2\2<=\7\3\2\2=G\5\f\7\2>?\7\4\2\2?@\5\b"+
-		"\5\2@A\7\5\2\2AG\3\2\2\2BC\5\22\n\2CD\5\16\b\2DE\5\22\n\2EG\3\2\2\2F<"+
-		"\3\2\2\2F>\3\2\2\2FB\3\2\2\2G\r\3\2\2\2HI\t\2\2\2I\17\3\2\2\2JK\7\31\2"+
-		"\2KL\7\f\2\2LR\5\22\n\2MN\7\4\2\2NO\5\22\n\2OP\7\5\2\2PR\3\2\2\2QJ\3\2"+
+		"\2\4\6\b\n\f\16\20\22\24\26\2\5\3\2\5\n\3\2\f\r\3\2\16\17\2p\2\30\3\2"+
+		"\2\2\4\33\3\2\2\2\6$\3\2\2\2\b&\3\2\2\2\n\61\3\2\2\2\fF\3\2\2\2\16H\3"+
+		"\2\2\2\20Q\3\2\2\2\22S\3\2\2\2\24^\3\2\2\2\26o\3\2\2\2\30\31\5\4\3\2\31"+
+		"\32\7\2\2\3\32\3\3\2\2\2\33\34\7\20\2\2\34\35\5\b\5\2\35\36\7\21\2\2\36"+
+		"\37\5\20\t\2\37 \5\6\4\2 \5\3\2\2\2!\"\7\22\2\2\"%\5\20\t\2#%\3\2\2\2"+
+		"$!\3\2\2\2$#\3\2\2\2%\7\3\2\2\2&\'\b\5\1\2\'(\5\n\6\2(.\3\2\2\2)*\f\4"+
+		"\2\2*+\7\23\2\2+-\5\n\6\2,)\3\2\2\2-\60\3\2\2\2.,\3\2\2\2./\3\2\2\2/\t"+
+		"\3\2\2\2\60.\3\2\2\2\61\62\b\6\1\2\62\63\5\f\7\2\639\3\2\2\2\64\65\f\4"+
+		"\2\2\65\66\7\24\2\2\668\5\f\7\2\67\64\3\2\2\28;\3\2\2\29\67\3\2\2\29:"+
+		"\3\2\2\2:\13\3\2\2\2;9\3\2\2\2<=\7\25\2\2=G\5\f\7\2>?\7\3\2\2?@\5\b\5"+
+		"\2@A\7\4\2\2AG\3\2\2\2BC\5\22\n\2CD\5\16\b\2DE\5\22\n\2EG\3\2\2\2F<\3"+
+		"\2\2\2F>\3\2\2\2FB\3\2\2\2G\r\3\2\2\2HI\t\2\2\2I\17\3\2\2\2JK\7\30\2\2"+
+		"KL\7\13\2\2LR\5\22\n\2MN\7\3\2\2NO\5\22\n\2OP\7\4\2\2PR\3\2\2\2QJ\3\2"+
 		"\2\2QM\3\2\2\2R\21\3\2\2\2ST\b\n\1\2TU\5\24\13\2U[\3\2\2\2VW\f\4\2\2W"+
 		"X\t\3\2\2XZ\5\24\13\2YV\3\2\2\2Z]\3\2\2\2[Y\3\2\2\2[\\\3\2\2\2\\\23\3"+
 		"\2\2\2][\3\2\2\2^_\b\13\1\2_`\5\26\f\2`f\3\2\2\2ab\f\4\2\2bc\t\4\2\2c"+
 		"e\5\26\f\2da\3\2\2\2eh\3\2\2\2fd\3\2\2\2fg\3\2\2\2g\25\3\2\2\2hf\3\2\2"+
-		"\2ij\7\4\2\2jk\5\22\n\2kl\7\5\2\2lp\3\2\2\2mp\7\31\2\2np\7\30\2\2oi\3"+
+		"\2ij\7\3\2\2jk\5\22\n\2kl\7\4\2\2lp\3\2\2\2mp\7\30\2\2np\7\27\2\2oi\3"+
 		"\2\2\2om\3\2\2\2on\3\2\2\2p\27\3\2\2\2\n$.9FQ[fo";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());

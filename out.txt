@@ -1,0 +1,1 @@
+(ifSt if (bexp (bterm (bfactor (expr (term (factor a))) (relop >=) (expr (term (term (factor b)) + (factor c)))))) then (st w = (expr (term (factor 5)))) (elseSt else (st a = (expr (expr (term (factor c))) / (term (factor 5))))))
