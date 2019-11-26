@@ -1,4 +1,0 @@
-if a >= b + c then 
-	w = 5 
-else 
-	a = c / 5

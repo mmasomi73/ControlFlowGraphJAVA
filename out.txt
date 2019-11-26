@@ -1,1 +1,52 @@
-(ifSt if (bexp (bterm (bfactor (expr (term (factor a))) (relop >=) (expr (term (term (factor b)) + (factor c)))))) then (st w = (expr (term (factor 5)))) (elseSt else (st a = (expr (expr (term (factor c))) / (term (factor 5))))))
+'- compilationUnit
+   |- typeDeclaration
+   |  |- classOrInterfaceModifier
+   |  |  '- TOKEN[type: 10, text: public]
+   |  '- classDeclaration
+   |     |- TOKEN[type: 7, text: class]
+   |     |- TOKEN[type: 98, text: HelloWorld]
+   |     '- classBody
+   |        |- TOKEN[type: 20, text: {]
+   |        |- classBodyDeclaration
+   |        |  |- modifiers
+   |        |  |  |- modifier
+   |        |  |  |  '- TOKEN[type: 10, text: public]
+   |        |  |  '- modifier
+   |        |  |     '- TOKEN[type: 4, text: static]
+   |        |  '- member
+   |        |     |- TOKEN[type: 25, text: void]
+   |        |     |- TOKEN[type: 98, text: main]
+   |        |     |- formalParameters
+   |        |     |  |- TOKEN[type: 42, text: (]
+   |        |     |  |- formalParameterDecls
+   |        |     |  |  |- [684 679 437 416 411 388 277 256 227]
+   |        |     |  |  |  '- [684 679 437 416 411 388 277 256 227]
+   |        |     |  |  |- type
+   |        |     |  |  |  |- classOrInterfaceType
+   |        |     |  |  |  |  '- TOKEN[type: 98, text: String]
+   |        |     |  |  |  |- TOKEN[type: 23, text: []
+   |        |     |  |  |  '- TOKEN[type: 24, text: ]]
+   |        |     |  |  '- formalParameterDeclsRest
+   |        |     |  |     '- TOKEN[type: 98, text: args]
+   |        |     |  '- TOKEN[type: 43, text: )]
+   |        |     '- methodDeclarationRest
+   |        |        |- TOKEN[type: 20, text: {]
+   |        |        |- blockStatement
+   |        |        |  |- statementExpression
+   |        |        |  |  |- expression
+   |        |        |  |  |  |- expression
+   |        |        |  |  |  |  |- expression
+   |        |        |  |  |  |  |  '- TOKEN[type: 98, text: System]
+   |        |        |  |  |  |  |- TOKEN[type: 5, text: .]
+   |        |        |  |  |  |  '- TOKEN[type: 98, text: out]
+   |        |        |  |  |  |- TOKEN[type: 5, text: .]
+   |        |        |  |  |  '- TOKEN[type: 98, text: println]
+   |        |        |  |  |- TOKEN[type: 42, text: (]
+   |        |        |  |  |- expressionList
+   |        |        |  |  |  '- TOKEN[type: 95, text: "Hello, World"]
+   |        |        |  |  '- TOKEN[type: 43, text: )]
+   |        |        |  '- TOKEN[type: 2, text: ;]
+   |        |        '- TOKEN[type: 21, text: }]
+   |        '- TOKEN[type: 21, text: }]
+   '- TOKEN[type: -1, text: <EOF>]
+
