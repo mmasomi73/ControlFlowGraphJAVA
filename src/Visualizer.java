@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AST {
+public class Visualizer {
 
     /**
      * The payload will either be the name of the parser rule, or the token
@@ -14,26 +14,26 @@ public class AST {
     private final Object payload;
 
     /**
-     * All child nodes of this AST.
+     * All child nodes of this Visualizer.
      */
-    private final List<AST> children;
+    private final List<Visualizer> children;
 
-    public AST(ParseTree tree) {
+    public Visualizer(ParseTree tree) {
         this(null, tree);
     }
 
-    private AST(AST ast, ParseTree tree) {
-        this(ast, tree, new ArrayList<AST>());
+    private Visualizer(Visualizer ast, ParseTree tree) {
+        this(ast, tree, new ArrayList<Visualizer>());
     }
 
-    private AST(AST parent, ParseTree tree, List<AST> children) {
+    private Visualizer(Visualizer parent, ParseTree tree, List<Visualizer> children) {
 
         this.payload = getPayload(tree);
         this.children = children;
 
         if (parent == null) {
-            // We're at the root of the AST, traverse down the parse tree to fill
-            // this AST with nodes.
+            // We're at the root of the Visualizer, traverse down the parse tree to fill
+            // this Visualizer with nodes.
             walk(tree, this);
         }
         else {
@@ -45,11 +45,11 @@ public class AST {
         return payload;
     }
 
-    public List<AST> getChildren() {
+    public List<Visualizer> getChildren() {
         return new ArrayList<>(children);
     }
 
-    // Determines the payload of this AST: a string in case it's an inner node (which
+    // Determines the payload of this Visualizer: a string in case it's an inner node (which
     // is the name of the parser rule), or a Token in case it is a leaf node.
     private Object getPayload(ParseTree tree) {
         if (tree.getChildCount() == 0) {
@@ -64,25 +64,25 @@ public class AST {
         }
     }
 
-    // Fills this AST based on the parse tree.
-    private static void walk(ParseTree tree, AST ast) {
+    // Fills this Visualizer based on the parse tree.
+    private static void walk(ParseTree tree, Visualizer ast) {
 
         if (tree.getChildCount() == 0) {
-            // We've reached a leaf. We must create a new instance of an AST because
+            // We've reached a leaf. We must create a new instance of an Visualizer because
             // the constructor will make sure this new instance is added to its parent's
             // child nodes.
-            new AST(ast, tree);
+            new Visualizer(ast, tree);
         }
         else if (tree.getChildCount() == 1) {
             // We've reached an inner node with a single child: we don't include this in
-            // our AST.
+            // our Visualizer.
             walk(tree.getChild(0), ast);
         }
         else if (tree.getChildCount() > 1) {
 
             for (int i = 0; i < tree.getChildCount(); i++) {
 
-                AST temp = new AST(ast, tree.getChild(i));
+                Visualizer temp = new Visualizer(ast, tree.getChild(i));
 
                 if (!(temp.payload instanceof Token)) {
                     // Only traverse down if the payload is not a Token.
@@ -97,16 +97,16 @@ public class AST {
 
         StringBuilder builder = new StringBuilder();
 
-        AST ast = this;
-        List<AST> firstStack = new ArrayList<>();
+        Visualizer ast = this;
+        List<Visualizer> firstStack = new ArrayList<>();
         firstStack.add(ast);
 
-        List<List<AST>> childListStack = new ArrayList<>();
+        List<List<Visualizer>> childListStack = new ArrayList<>();
         childListStack.add(firstStack);
 
         while (!childListStack.isEmpty()) {
 
-            List<AST> childStack = childListStack.get(childListStack.size() - 1);
+            List<Visualizer> childStack = childListStack.get(childListStack.size() - 1);
 
             if (childStack.isEmpty()) {
                 childListStack.remove(childListStack.size() - 1);
@@ -136,7 +136,7 @@ public class AST {
                         .append("\n");
 
                 if (ast.children.size() > 0) {
-                    List<AST> children = new ArrayList<>();
+                    List<Visualizer> children = new ArrayList<>();
                     for (int i = 0; i < ast.children.size(); i++) {
                         children.add(ast.children.get(i));
                     }
