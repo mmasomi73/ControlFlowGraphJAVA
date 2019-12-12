@@ -1,5 +1,33 @@
 public class HelloWorld {
    public static void main(String[] args) {
-      System.out.println("Hello, World");
+      /*a = b + c * d - e / f + g + h * i * m * n + g + r + ++o;
+      c += a;
+      z >>= b--;
+
+        if(a > 5){
+
+            if(a > 5){
+                z = 5;
+            }else{
+                z=6;
+            }
+            r = 5;
+        }
+
+        for(i=0;i<10;i++){
+            z = 5;
+        }
+
+        while(i < 100){
+            z = 5;
+            i++;
+        }
+
+        do{
+            b++;
+            a++;
+        }while (a < 100);*/
+
+        a = n>10?z + g -5 :50;
    }
 }

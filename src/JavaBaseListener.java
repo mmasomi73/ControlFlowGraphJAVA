@@ -1,5 +1,8 @@
 // Generated from D:/University/Uni/term-1/Compiler/Project/Phase-01/grammer\Java.g4 by ANTLR 4.7.2
 
+import java.util.ArrayList;
+
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;

@@ -6,11 +6,32 @@
  */
 grammar Java;
 
+@header{
+import java.util.ArrayList;
+}
+
 @lexer::members {
   protected boolean enumIsKeyword = true;
   protected boolean assertIsKeyword = true;
 }
+@parser::members{
 
+    ArrayList<String> list=new ArrayList<String>();
+    int temp = 0;
+    int label = 0;
+    Stack stack = new Stack();
+    java.util.List<Boolean> exists=new ArrayList<Boolean>();
+
+    String newLabel(){
+        return "l"+ ++label;
+    }
+     String newTemp(){
+            return "t"+ ++temp;
+        }
+    void print(String s){
+        System.out.println(s);
+    }
+}
 // starting point for parsing a java file
 compilationUnit
     :   packageDeclaration? importDeclaration* typeDeclaration*
@@ -431,13 +452,50 @@ variableModifiers
     :   variableModifier*
     ;
 
-statement
+statement returns [String val] locals [String l1,String l2,boolean exi]
     : block
     |   ASSERT expression (':' expression)? ';'
-    |   'if' parExpression statement ('else' statement)?
-    |   'for' '(' forControl ')' statement
-    |   'while' parExpression statement
-    |   'do' statement 'while' parExpression ';'
+    |   'if' parExpression {
+            $exi = false;
+            $l1 = newLabel();
+            print("if NOT " + $parExpression.val +" goto "+$l1);
+        } statement ('else' {
+            $exi = true;
+            $l2 = newLabel();
+            print("goto "+$l2);
+            print($l1+":");
+        } statement {print($l2+":");})?{
+            if(! $exi){
+                {print($l1+":");}
+            }
+        }
+    |   'for' '(' f = forControl ')' s = statement {
+            if($f.l_start != null && $f.l_end != null){
+                print("goto " + $f.l_start);
+                print($f.l_end+":");
+            }
+        }
+    |   'while'{
+           $l1 = newLabel();
+           $l2 = newLabel();
+           print($l1+":");
+
+       } parExpression{
+           print("if NOT " + $parExpression.val +" goto "+$l2);
+       } statement {
+           print("goto "+$l1);
+           print($l2+":");
+       }
+    |   'do' {
+            $l1 = newLabel();
+            $l2 = newLabel();
+            print($l1+":");
+
+    } statement 'while' parExpression {
+         print("if NOT " + $parExpression.val +" goto "+$l2);
+         print("goto "+$l1);
+         print($l2+":");
+     } ';'
     |   'try' block
         ( catches 'finally' block
         | catches
@@ -480,12 +538,27 @@ switchLabel
     |   'default' ':'
     ;
 
-forControl
+forControl returns [String val, String l_start,String l_end] locals [String l1,String l2,String t1, boolean exi]
     :   enhancedForControl
-    |   forInit? ';' expression? ';' forUpdate?
+    |   {$exi = false; $l_start = $l_end = $l1 = newLabel(); }(forInit)? ';'{print($l1+":");} (e=expression{
+            $exi = true;
+            if($e.val != null){
+                $l2 = newLabel();
+                $l_end = $l2;
+                $t1 = newTemp();
+                print($t1 + " = "+$e.val);
+                print("if NOT "+$t1+" goto "+ $l2);
+            }
+            })? {
+                if(! $exi){
+                    $l2 = newLabel();
+                    $l_end = $l2;
+                    print("if FALSE "+$t1+" goto "+ $l2);
+                }
+            }';' forUpdate?
     ;
 
-forInit
+forInit returns [String val]
     :   localVariableDeclaration
     |   expressionList
     ;
@@ -494,18 +567,18 @@ enhancedForControl
     :   variableModifiers type Identifier ':' expression
     ;
 
-forUpdate
-    :   expressionList
+forUpdate returns [String val]
+    :   expressionList {$val = $expressionList.val;}
     ;
 
 // EXPRESSIONS
 
-parExpression
-    :   '(' expression ')'
+parExpression returns [String val]
+    :   '(' expression ')' {$val = $expression.val;}
     ;
 
-expressionList
-    :   expression (',' expression)*
+expressionList returns [String val]
+    :   e1 = expression {$val = $e1.val;} (',' expression)*
     ;
 
 statementExpression
@@ -516,8 +589,8 @@ constantExpression
     :   expression
     ;
 
-expression
-    :   primary
+expression returns [String val] locals [String op,String t,String l1,String l2]
+    :   primary {$val = $primary.val;}
     |   expression '.' Identifier
     |   expression '.' 'this'
     |   expression '.' 'super' '(' expressionList? ')'
@@ -526,46 +599,198 @@ expression
     |   expression '.' explicitGenericInvocation
     |   expression '[' expression ']'
     |   expression '(' expressionList? ')'
-    |   expression ('++' | '--')
-    |   ('+'|'-'|'++'|'--') expression
+    |   e=expression ('++' {$op="++";}| '--'{$op="--";}){
+          if($e.val != null){
+               $t = newTemp();
+               $val = $t;
+              if($op == "++"){
+                  print($val +" = "+ $e.val + " + " + 1);
+                  print($e.val +" = "+ $val);
+                }else if($op == "--"){
+                  print($val +" = "+ $e.val + " - " + 1);
+                  print($e.val +" = "+ $val);
+                }
+           }
+      }
+    |   ('+'{$op="+";}|'-'{$op="-";}|'++'{$op="++";}|'--'{$op="--";}) e=expression{
+            if($e.val != null){
+                 $t = newTemp();
+                 $val = $t;
+                 if($op == "+"){
+                    $val = $e.val;
+                 }else if($op == "-"){
+                    print($val +" = "+ $e.val + " * -1");
+                 }else if($op == "++"){
+                    print($val +" = "+ $e.val + " + " + 1);
+                    print($e.val +" = "+ $val);
+                  }else if($op == "--"){
+                    print($val +" = "+ $e.val + " - " + 1);
+                    print($e.val +" = "+ $val);
+                  }
+             }
+        }
     |   ('~'|'!') expression
     |   '(' type ')' expression
     |   'new' creator
-    |   expression ('*'|'/'|'%') expression
-    |   expression ('+'|'-') expression
-    |   expression ('<' '<' | '>' '>' '>' | '>' '>') expression
-    |   expression ('<' '=' | '>' '=' | '>' | '<') expression
+    |   e1=expression ('*'{$op=" * ";}|'/'{$op=" / ";}|'%'{$op=" % ";}) e2=expression{
+
+             if($e1.val != null && $e2.val != null){
+                 $t = newTemp();
+                 $val = $t;
+                 print($val +" = "+$e1.val + $op + $e2.val);
+             }else if($e1.val == null && $e2.val != null){
+             }else if($e1.val != null && $e2.val == null){
+             }else if($e1.val == null && $e2.val == null){
+             }
+       }
+    |   e1=expression ('+'{$op=" + ";}|'-'{$op=" - ";}) e2=expression{
+            if($e1.val != null && $e2.val != null){
+                 $t = newTemp();
+                 $val = $t;
+                 print($t +" = "+$e1.val + $op + $e2.val);
+             }else if($e1.val == null && $e2.val != null){
+             }else if($e1.val != null && $e2.val == null){
+             }else if($e1.val == null && $e2.val == null){
+             }
+        }
+    |   e1=expression ('<' '<' {$op=" << ";}| '>' '>' '>' {$op=" >>> ";}| '>' '>' {$op=" >> ";}) e2=expression{
+              if($e1.val != null && $e2.val != null){
+                  $t = newTemp();
+                  $val = $t;
+                  print($val+" = "+$e1.val + $op + $e2.val);
+              }
+
+          }
+    |   e1=expression ('<' '=' {$op=" <= ";}| '>' '=' {$op=" >= ";}| '>' {$op=" > ";}| '<' {$op=" < ";}) e2=expression{
+            if($e1.val != null && $e2.val != null){
+                $t = newTemp();
+                $val = $t;
+                print($val+" = "+$e1.val + $op + $e2.val);
+            }
+
+        }
     |   expression 'instanceof' type
-    |   expression ('==' | '!=') expression
-    |   expression '&' expression
-    |   expression '^' expression
-    |   expression '|' expression
-    |   expression '&&' expression
-    |   expression '||' expression
-    |   expression '?' expression ':' expression
-    |  <assoc=right> expression
-        ('^='
-        |'+='
-        |'-='
-        |'*='
-        |'/='
-        |'&='
-        |'|='
-        |'='
-        |'>' '>' '='
-        |'>' '>' '>' '='
-        |'<' '<' '='
-        |'%='
+    |   e1=expression ('==' {$op=" == ";}| '!=' {$op=" != ";}) e2=expression
+    |   e1=expression '&' e1=expression {
+            if($e1.val != null && $e2.val != null){
+                $t = newTemp();
+                $val = $t;
+                print($t +" = "+$e1.val + " & " + $e2.val);
+            }
+        }
+    |   expression '^' expression{
+         if($e1.val != null && $e2.val != null){
+             $t = newTemp();
+             $val = $t;
+             print($t +" = "+$e1.val + " ^ " + $e2.val);
+         }
+     }
+    |   expression '|' expression{
+          if($e1.val != null && $e2.val != null){
+              $t = newTemp();
+              $val = $t;
+              print($t +" = "+$e1.val + " | " + $e2.val);
+          }
+      }
+    |   expression '&&' expression{
+        if($e1.val != null && $e2.val != null){
+            $t = newTemp();
+            $val = $t;
+            print($t +" = "+$e1.val + " && " + $e2.val);
+        }
+     }
+    |   expression '||' expression{
+          if($e1.val != null && $e2.val != null){
+              $t = newTemp();
+              $val = $t;
+              print($t +" = "+$e1.val + " || " + $e2.val);
+          }
+      }
+    |   e1=expression {
+          $t = newTemp();
+          if($e1.val != null){
+              $l1 = newLabel();
+              print("if NOT " + $e1.val +" goto "+ $l1);
+          }
+    } '?' e2=expression {
+            if($e1.val != null && $e2.val != null ){
+                $l2 = newLabel();
+                print($t + " = " +$e2.val);
+                print("goto "+$l2);
+                print($l1+":");
+                $val = $t;
+            }
+
+    }':' e3=expression {
+        if($e1.val != null && $e2.val != null && $e3.val != null){
+            print($t + " = " +$e3.val);
+            $val = $t;
+            print($l2+":");
+        }
+
+        }
+    |  <assoc=right> e1=expression
+        ('^=' {$op="^=";}
+        |'+=' {$op="+=";}
+        |'-=' {$op="-=";}
+        |'*=' {$op="*=";}
+        |'/=' {$op="/=";}
+        |'&=' {$op="&=";}
+        |'|=' {$op="|=";}
+        |'=' {$op="=";}
+        |'>' '>' '=' {$op=">>=";}
+        |'>' '>' '>' '=' {$op=">>>=";}
+        |'<' '<' '=' {$op="<<=";}
+        |'%=' {$op="%=";}
         )
-        expression
+        e2=expression{
+            if($e1.val != null && $e2.val != null){
+                $t = newTemp();
+                $val = $t;
+                if($op == "^="){
+                    print($t +" = "+$e1.val + " ^ " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == "+="){
+                    print($t +" = "+$e1.val + " + " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == "-="){
+                    print($t +" = "+$e1.val + " - " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == "*="){
+                    print($t +" = "+$e1.val + " * " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == "/="){
+                    print($t +" = "+$e1.val + " / " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == "&="){
+                    print($t +" = "+$e1.val + " & " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == "="){
+                    print($e1.val +" = "+ $e2.val);
+                    $val = $e1.val;
+                }else if($op == ">>="){
+                    print($t +" = "+$e1.val + " >> " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == ">>>="){
+                    print($t +" = "+$e1.val + " >>> " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == "<<="){
+                    print($t +" = "+$e1.val + " << " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }else if($op == "%="){
+                    print($t +" = "+$e1.val + " % " + $e2.val);
+                    print($e1.val +" = "+ $t);
+                }
+            }
+        }
     ;
 
-primary
-    :   '(' expression ')'
+primary returns [String val]
+    :   '(' expression ')'{$val = $expression.val;}
     |   'this'
     |   'super'
-    |   literal
-    |   Identifier
+    |   literal {$val = $literal.text;}
+    |   Identifier {$val = $Identifier.text;}
     |   type '.' 'class'
     |   'void' '.' 'class'
     ;

@@ -19,10 +19,12 @@ public class JavaGrammar {
         TokenStream tokenStream = new CommonTokenStream(javaLexer); // Give Token stream from lexer
         JavaParser javaParser = new JavaParser(tokenStream); // Pass Token stream to Generated Parser to Parse Tokens
 
-        ParseTree parseTree = javaParser.compilationUnit(); // Get Parser result form compilationUnit grammar
+        ParseTree parseTree = javaParser.compilationUnit();
+        // Get Parser result form compilationUnit grammar
+        JavaParser.CompilationUnitContext result = javaParser.compilationUnit();
         Visualizer visualizer = new Visualizer(parseTree); //Visualize the result of Parse tree
 
-        System.out.println(visualizer);
+//        System.out.println(visualizer);
         try (PrintWriter out = new PrintWriter("out.txt")) {
             out.println(visualizer); //Write Output in out.txt
         } catch (IOException e) {

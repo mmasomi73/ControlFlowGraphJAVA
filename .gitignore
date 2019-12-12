@@ -78,4 +78,5 @@ fabric.properties
 *.docx
 *.pdf
 *.rar
+*.zip
 *.tmp

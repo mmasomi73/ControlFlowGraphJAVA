@@ -34,17 +34,29 @@
    |        |        |- blockStatement
    |        |        |  |- statementExpression
    |        |        |  |  |- expression
-   |        |        |  |  |  |- expression
-   |        |        |  |  |  |  |- expression
-   |        |        |  |  |  |  |  '- TOKEN[type: 98, text: System]
-   |        |        |  |  |  |  |- TOKEN[type: 5, text: .]
-   |        |        |  |  |  |  '- TOKEN[type: 98, text: out]
-   |        |        |  |  |  |- TOKEN[type: 5, text: .]
-   |        |        |  |  |  '- TOKEN[type: 98, text: println]
-   |        |        |  |  |- TOKEN[type: 42, text: (]
-   |        |        |  |  |- expressionList
-   |        |        |  |  |  '- TOKEN[type: 95, text: "Hello, World"]
-   |        |        |  |  '- TOKEN[type: 43, text: )]
+   |        |        |  |  |  '- TOKEN[type: 98, text: a]
+   |        |        |  |  |- TOKEN[type: 27, text: =]
+   |        |        |  |  '- expression
+   |        |        |  |     |- expression
+   |        |        |  |     |  |- expression
+   |        |        |  |     |  |  '- TOKEN[type: 98, text: n]
+   |        |        |  |     |  |- TOKEN[type: 18, text: >]
+   |        |        |  |     |  '- expression
+   |        |        |  |     |     '- TOKEN[type: 91, text: 10]
+   |        |        |  |     |- TOKEN[type: 40, text: ?]
+   |        |        |  |     |- expression
+   |        |        |  |     |  |- expression
+   |        |        |  |     |  |  |- expression
+   |        |        |  |     |  |  |  '- TOKEN[type: 98, text: z]
+   |        |        |  |     |  |  |- TOKEN[type: 69, text: +]
+   |        |        |  |     |  |  '- expression
+   |        |        |  |     |  |     '- TOKEN[type: 98, text: g]
+   |        |        |  |     |  |- TOKEN[type: 70, text: -]
+   |        |        |  |     |  '- expression
+   |        |        |  |     |     '- TOKEN[type: 91, text: 5]
+   |        |        |  |     |- TOKEN[type: 51, text: :]
+   |        |        |  |     '- expression
+   |        |        |  |        '- TOKEN[type: 91, text: 50]
    |        |        |  '- TOKEN[type: 2, text: ;]
    |        |        '- TOKEN[type: 21, text: }]
    |        '- TOKEN[type: 21, text: }]
