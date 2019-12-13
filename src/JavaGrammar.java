@@ -1,3 +1,4 @@
+import intermediate.shcema.*;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -7,6 +8,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.*;
 
 
 public class JavaGrammar {
@@ -23,16 +25,10 @@ public class JavaGrammar {
         // Get Parser result form compilationUnit grammar
         JavaParser.CompilationUnitContext result = javaParser.compilationUnit();
         Visualizer visualizer = new Visualizer(parseTree); //Visualize the result of Parse tree
+        System.out.println("---------------------");
+        System.out.println(javaParser.intermedList.toString());
 
-//        System.out.println(visualizer);
-        try (PrintWriter out = new PrintWriter("out.txt")) {
-            out.println(visualizer); //Write Output in out.txt
-        } catch (IOException e) {
-            System.out.println(e.getStackTrace().toString());
-        }
 
     }
-
-
 
 }

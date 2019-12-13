@@ -7,7 +7,12 @@
 grammar Java;
 
 @header{
-import java.util.ArrayList;
+import intermediate.shcema.IntermediateScheme;
+import intermediate.shcema.IFStatementScheme;
+import intermediate.shcema.AssignmentScheme;
+import intermediate.shcema.ExpressionScheme;
+import intermediate.shcema.GoToScheme;
+import java.util.*;
 }
 
 @lexer::members {
@@ -16,11 +21,8 @@ import java.util.ArrayList;
 }
 @parser::members{
 
-    ArrayList<String> list=new ArrayList<String>();
     int temp = 0;
     int label = 0;
-    Stack stack = new Stack();
-    java.util.List<Boolean> exists=new ArrayList<Boolean>();
 
     String newLabel(){
         return "l"+ ++label;
@@ -31,6 +33,14 @@ import java.util.ArrayList;
     void print(String s){
         System.out.println(s);
     }
+
+    IntermediateScheme schema;
+    AssignmentScheme assign;
+    IFStatementScheme ifStatementScheme;
+    GoToScheme gotoScheme;
+    ExpressionScheme expressionScheme;
+
+    List<IntermediateScheme> intermedList = new ArrayList<IntermediateScheme>();
 }
 // starting point for parsing a java file
 compilationUnit
@@ -219,8 +229,17 @@ variableDeclarators
     :   variableDeclarator (',' variableDeclarator)*
     ;
 
-variableDeclarator
-    :   variableDeclaratorId ('=' variableInitializer)?
+variableDeclarator returns [String val] locals[String t]
+    :   e1 = variableDeclaratorId ('=' e2 = variableInitializer {
+        if($e1.val != null && $e1.val != null){
+            $t = newTemp();
+            $val = $e1.val;
+
+            assign = new AssignmentScheme($e1.val,$e2.val);
+            schema = new IntermediateScheme("a",assign,false,null);
+            intermedList.add(schema);
+        }
+    })?
     ;
 
 constantDeclaratorsRest
@@ -231,13 +250,13 @@ constantDeclaratorRest
     :   ('[' ']')* '=' variableInitializer
     ;
 
-variableDeclaratorId
-    :   Identifier ('[' ']')*
+variableDeclaratorId returns [String val]
+    :   Identifier {$val = $Identifier.text;} ('[' ']')*
     ;
 
-variableInitializer
+variableInitializer returns [String val]
     :   arrayInitializer
-    |   expression
+    |   expression {$val = $expression.val;}
     ;
 
 arrayInitializer
@@ -458,43 +477,98 @@ statement returns [String val] locals [String l1,String l2,boolean exi]
     |   'if' parExpression {
             $exi = false;
             $l1 = newLabel();
-            print("if NOT " + $parExpression.val +" goto "+$l1);
+
+            ifStatementScheme = new IFStatementScheme($parExpression.val,$l1,true);
+            schema = new IntermediateScheme("i",ifStatementScheme,false,null);
+            intermedList.add(schema);
+            //print("if NOT " + $parExpression.val +" goto "+$l1);
         } statement ('else' {
             $exi = true;
             $l2 = newLabel();
-            print("goto "+$l2);
-            print($l1+":");
-        } statement {print($l2+":");})?{
+
+            gotoScheme = new GoToScheme($l2);
+            schema = new IntermediateScheme("g",gotoScheme,false,null);
+            intermedList.add(schema);
+            //print("goto "+$l2);
+
+            schema = new IntermediateScheme("l",null,true,$l1);
+            intermedList.add(schema);
+            //print($l1+":");
+        } statement {
+
+                schema = new IntermediateScheme("l",null,true,$l2);
+                intermedList.add(schema);
+               // print($l2+":");
+
+            })?{
             if(! $exi){
-                {print($l1+":");}
+                {
+
+                    schema = new IntermediateScheme("l",null,true,$l1);
+                    intermedList.add(schema);
+                    //print($l1+":");
+
+                }
             }
         }
     |   'for' '(' f = forControl ')' s = statement {
             if($f.l_start != null && $f.l_end != null){
-                print("goto " + $f.l_start);
-                print($f.l_end+":");
+
+                gotoScheme = new GoToScheme($f.l_start);
+                schema = new IntermediateScheme("g",gotoScheme,false,null);
+                intermedList.add(schema);
+                //print("goto " + $f.l_start);
+
+                schema = new IntermediateScheme("l",null,true,$f.l_end);
+                intermedList.add(schema);
+                //print($f.l_end+":");
             }
         }
     |   'while'{
            $l1 = newLabel();
            $l2 = newLabel();
-           print($l1+":");
+
+           schema = new IntermediateScheme("l",null,true,$l1);
+           intermedList.add(schema);
+           //print($l1+":");
 
        } parExpression{
-           print("if NOT " + $parExpression.val +" goto "+$l2);
+            ifStatementScheme = new IFStatementScheme($parExpression.val,$l2,true);
+            schema = new IntermediateScheme("i",ifStatementScheme,false,null);
+            intermedList.add(schema);
+            //print("if NOT " + $parExpression.val +" goto "+$l2);
        } statement {
-           print("goto "+$l1);
-           print($l2+":");
+           gotoScheme = new GoToScheme($l1);
+           schema = new IntermediateScheme("g",gotoScheme,false,null);
+           intermedList.add(schema);
+           //print("goto "+$l1);
+
+           schema = new IntermediateScheme("l",null,true,$l2);
+           intermedList.add(schema);
+           //print($l2+":");
        }
     |   'do' {
             $l1 = newLabel();
             $l2 = newLabel();
-            print($l1+":");
+
+            schema = new IntermediateScheme("l",null,true,$l1);
+            intermedList.add(schema);
+            //print($l1+":");
 
     } statement 'while' parExpression {
-         print("if NOT " + $parExpression.val +" goto "+$l2);
-         print("goto "+$l1);
-         print($l2+":");
+         ifStatementScheme = new IFStatementScheme($parExpression.val,$l2,true);
+         schema = new IntermediateScheme("i",ifStatementScheme,false,null);
+         intermedList.add(schema);
+         //print("if NOT " + $parExpression.val +" goto "+$l2);
+
+         gotoScheme = new GoToScheme($l1);
+         schema = new IntermediateScheme("g",gotoScheme,false,null);
+         intermedList.add(schema);
+         //print("goto "+$l1);
+
+         schema = new IntermediateScheme("l",null,true,$l2);
+         intermedList.add(schema);
+         //print($l2+":");
      } ';'
     |   'try' block
         ( catches 'finally' block
@@ -540,20 +614,38 @@ switchLabel
 
 forControl returns [String val, String l_start,String l_end] locals [String l1,String l2,String t1, boolean exi]
     :   enhancedForControl
-    |   {$exi = false; $l_start = $l_end = $l1 = newLabel(); }(forInit)? ';'{print($l1+":");} (e=expression{
+    |   {$exi = false; $l_start = $l_end = $l1 = newLabel(); }(forInit)? ';'{
+
+            schema = new IntermediateScheme("l",null,true,$l1);
+            intermedList.add(schema);
+            //print($l1+":");
+
+        } (e=expression{
             $exi = true;
             if($e.val != null){
                 $l2 = newLabel();
                 $l_end = $l2;
                 $t1 = newTemp();
-                print($t1 + " = "+$e.val);
-                print("if NOT "+$t1+" goto "+ $l2);
+
+                assign = new AssignmentScheme($t1,$e.val);
+                schema = new IntermediateScheme("a",assign,false,null);
+                intermedList.add(schema);
+                //print($t1 + " = "+$e.val);
+
+                ifStatementScheme = new IFStatementScheme($t1,$l2,true);
+                schema = new IntermediateScheme("i",ifStatementScheme,false,null);
+                intermedList.add(schema);
+                //print("if NOT "+$t1+" goto "+ $l2);
             }
             })? {
                 if(! $exi){
                     $l2 = newLabel();
                     $l_end = $l2;
-                    print("if FALSE "+$t1+" goto "+ $l2);
+
+                    ifStatementScheme = new IFStatementScheme("FALSE",$l2,false);
+                    schema = new IntermediateScheme("i",ifStatementScheme,false,null);
+                    intermedList.add(schema);
+                    //print("if FALSE "+$t1+" goto "+ $l2);
                 }
             }';' forUpdate?
     ;
@@ -604,11 +696,26 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                $t = newTemp();
                $val = $t;
               if($op == "++"){
-                  print($val +" = "+ $e.val + " + " + 1);
-                  print($e.val +" = "+ $val);
+                  expressionScheme = new ExpressionScheme($val,$e.val,"+","1");
+                  schema = new IntermediateScheme("e",expressionScheme,false,null);
+                  intermedList.add(schema);
+                  //print($val +" = "+ $e.val + " + " + 1);
+
+                  assign = new AssignmentScheme($e.val,$val);
+                  schema = new IntermediateScheme("a",assign,false,null);
+                  intermedList.add(schema);
+                  //print($e.val +" = "+ $val);
                 }else if($op == "--"){
-                  print($val +" = "+ $e.val + " - " + 1);
-                  print($e.val +" = "+ $val);
+
+                  expressionScheme = new ExpressionScheme($val,$e.val,"-","1");
+                  schema = new IntermediateScheme("e",expressionScheme,false,null);
+                  intermedList.add(schema);
+                  //print($val +" = "+ $e.val + " - " + 1);
+
+                  assign = new AssignmentScheme($e.val,$val);
+                  schema = new IntermediateScheme("a",assign,false,null);
+                  intermedList.add(schema);
+                  //print($e.val +" = "+ $val);
                 }
            }
       }
@@ -619,13 +726,35 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                  if($op == "+"){
                     $val = $e.val;
                  }else if($op == "-"){
-                    print($val +" = "+ $e.val + " * -1");
+                    expressionScheme = new ExpressionScheme($val,$e.val,"*","-1");
+                    schema = new IntermediateScheme("e",expressionScheme,false,null);
+                    intermedList.add(schema);
+                    //print($val +" = "+ $e.val + " * -1");
+
+                    assign = new AssignmentScheme($e.val,$val);
+                    schema = new IntermediateScheme("a",assign,false,null);
+                    intermedList.add(schema);
+                    //print($e.val +" = "+ $val);
                  }else if($op == "++"){
-                    print($val +" = "+ $e.val + " + " + 1);
-                    print($e.val +" = "+ $val);
+                    expressionScheme = new ExpressionScheme($val,$e.val,"+","1");
+                    schema = new IntermediateScheme("e",expressionScheme,false,null);
+                    intermedList.add(schema);
+                    //print($val +" = "+ $e.val + " + " + 1);
+
+                    assign = new AssignmentScheme($e.val,$val);
+                    schema = new IntermediateScheme("a",assign,false,null);
+                    intermedList.add(schema);
+                    //print($e.val +" = "+ $val);
                   }else if($op == "--"){
-                    print($val +" = "+ $e.val + " - " + 1);
-                    print($e.val +" = "+ $val);
+                    expressionScheme = new ExpressionScheme($val,$e.val,"-","1");
+                    schema = new IntermediateScheme("e",expressionScheme,false,null);
+                    intermedList.add(schema);
+                    //print($val +" = "+ $e.val + " - " + 1);
+
+                    assign = new AssignmentScheme($e.val,$val);
+                    schema = new IntermediateScheme("a",assign,false,null);
+                    intermedList.add(schema);
+                    //print($e.val +" = "+ $val);
                   }
              }
         }
@@ -637,27 +766,33 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
              if($e1.val != null && $e2.val != null){
                  $t = newTemp();
                  $val = $t;
-                 print($val +" = "+$e1.val + $op + $e2.val);
-             }else if($e1.val == null && $e2.val != null){
-             }else if($e1.val != null && $e2.val == null){
-             }else if($e1.val == null && $e2.val == null){
+
+                 expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
+                 schema = new IntermediateScheme("e",expressionScheme,false,null);
+                 intermedList.add(schema);
+                 //print($val +" = "+$e1.val + $op + $e2.val);
              }
        }
     |   e1=expression ('+'{$op=" + ";}|'-'{$op=" - ";}) e2=expression{
             if($e1.val != null && $e2.val != null){
                  $t = newTemp();
                  $val = $t;
-                 print($t +" = "+$e1.val + $op + $e2.val);
-             }else if($e1.val == null && $e2.val != null){
-             }else if($e1.val != null && $e2.val == null){
-             }else if($e1.val == null && $e2.val == null){
+
+                 expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
+                 schema = new IntermediateScheme("e",expressionScheme,false,null);
+                 intermedList.add(schema);
+                 //print($t +" = "+$e1.val + $op + $e2.val);
              }
         }
     |   e1=expression ('<' '<' {$op=" << ";}| '>' '>' '>' {$op=" >>> ";}| '>' '>' {$op=" >> ";}) e2=expression{
               if($e1.val != null && $e2.val != null){
                   $t = newTemp();
                   $val = $t;
-                  print($val+" = "+$e1.val + $op + $e2.val);
+
+                  expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
+                  schema = new IntermediateScheme("e",expressionScheme,false,null);
+                  intermedList.add(schema);
+                  //print($val+" = "+$e1.val + $op + $e2.val);
               }
 
           }
@@ -665,121 +800,160 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
             if($e1.val != null && $e2.val != null){
                 $t = newTemp();
                 $val = $t;
-                print($val+" = "+$e1.val + $op + $e2.val);
+
+                expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
+                schema = new IntermediateScheme("e",expressionScheme,false,null);
+                intermedList.add(schema);
+                //print($val+" = "+$e1.val + $op + $e2.val);
             }
 
         }
     |   expression 'instanceof' type
-    |   e1=expression ('==' {$op=" == ";}| '!=' {$op=" != ";}) e2=expression
-    |   e1=expression '&' e1=expression {
+    |   e1=expression ('==' {$op=" == ";}| '!=' {$op=" != ";}) e2=expression{
+                if($e1.val != null && $e2.val != null){
+                    $t = newTemp();
+                    $val = $t;
+
+                    expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
+                    schema = new IntermediateScheme("e",expressionScheme,false,null);
+                    intermedList.add(schema);
+                    //print($t +" = "+$e1.val + $op + $e2.val);
+                }
+            }
+    |   e1=expression '&' e2=expression {
             if($e1.val != null && $e2.val != null){
                 $t = newTemp();
                 $val = $t;
-                print($t +" = "+$e1.val + " & " + $e2.val);
+
+                expressionScheme = new ExpressionScheme($val,$e1.val,"&",$e2.val);
+                schema = new IntermediateScheme("e",expressionScheme,false,null);
+                intermedList.add(schema);
+                //print($t +" = "+$e1.val + " & " + $e2.val);
             }
         }
-    |   expression '^' expression{
+    |   e1 = expression '^' e2 = expression{
          if($e1.val != null && $e2.val != null){
              $t = newTemp();
              $val = $t;
-             print($t +" = "+$e1.val + " ^ " + $e2.val);
+             expressionScheme = new ExpressionScheme($val,$e1.val,"^",$e2.val);
+             schema = new IntermediateScheme("e",expressionScheme,false,null);
+             intermedList.add(schema);
+             //print($t +" = "+$e1.val + " ^ " + $e2.val);
          }
      }
-    |   expression '|' expression{
+    |   e1 = expression '|' e2 = expression{
           if($e1.val != null && $e2.val != null){
               $t = newTemp();
               $val = $t;
-              print($t +" = "+$e1.val + " | " + $e2.val);
+
+              expressionScheme = new ExpressionScheme($val,$e1.val,"|",$e2.val);
+              schema = new IntermediateScheme("e",expressionScheme,false,null);
+              intermedList.add(schema);
+              //print($t +" = "+$e1.val + " | " + $e2.val);
           }
       }
-    |   expression '&&' expression{
+    |   e1 = expression '&&' e2 = expression{
         if($e1.val != null && $e2.val != null){
             $t = newTemp();
             $val = $t;
-            print($t +" = "+$e1.val + " && " + $e2.val);
+
+            expressionScheme = new ExpressionScheme($val,$e1.val,"&&",$e2.val);
+            schema = new IntermediateScheme("e",expressionScheme,false,null);
+            intermedList.add(schema);
+            //print($t +" = "+$e1.val + " && " + $e2.val);
         }
      }
-    |   expression '||' expression{
+    |   e1 = expression '||' e2 = expression{
           if($e1.val != null && $e2.val != null){
               $t = newTemp();
               $val = $t;
-              print($t +" = "+$e1.val + " || " + $e2.val);
+
+              expressionScheme = new ExpressionScheme($val,$e1.val,"||",$e2.val);
+              schema = new IntermediateScheme("e",expressionScheme,false,null);
+              intermedList.add(schema);
+              //print($t +" = "+$e1.val + " || " + $e2.val);
           }
       }
     |   e1=expression {
           $t = newTemp();
           if($e1.val != null){
               $l1 = newLabel();
-              print("if NOT " + $e1.val +" goto "+ $l1);
+
+              ifStatementScheme = new IFStatementScheme($e1.val,$l1,true);
+              schema = new IntermediateScheme("i",ifStatementScheme,false,null);
+              intermedList.add(schema);
+              //print("if NOT " + $e1.val +" goto "+ $l1);
           }
     } '?' e2=expression {
             if($e1.val != null && $e2.val != null ){
                 $l2 = newLabel();
-                print($t + " = " +$e2.val);
-                print("goto "+$l2);
-                print($l1+":");
+
+                assign = new AssignmentScheme($t,$e2.val);
+                schema = new IntermediateScheme("a",assign,false,null);
+                intermedList.add(schema);
+                //print($t + " = " +$e2.val);
+
+                gotoScheme = new GoToScheme($l2);
+                schema = new IntermediateScheme("g",gotoScheme,false,null);
+                intermedList.add(schema);
+                //print("goto "+$l2);
+
+                schema = new IntermediateScheme("l",null,true,$l1);
+                intermedList.add(schema);
+                //print($l1+":");
                 $val = $t;
             }
 
     }':' e3=expression {
         if($e1.val != null && $e2.val != null && $e3.val != null){
-            print($t + " = " +$e3.val);
+
+            assign = new AssignmentScheme($t,$e3.val);
+            schema = new IntermediateScheme("a",assign,false,null);
+            intermedList.add(schema);
+            //print($t + " = " +$e3.val);
             $val = $t;
-            print($l2+":");
+
+            schema = new IntermediateScheme("l",null,true,$l2);
+            intermedList.add(schema);
+            //print($l2+":");
         }
 
         }
     |  <assoc=right> e1=expression
-        ('^=' {$op="^=";}
-        |'+=' {$op="+=";}
-        |'-=' {$op="-=";}
-        |'*=' {$op="*=";}
-        |'/=' {$op="/=";}
-        |'&=' {$op="&=";}
-        |'|=' {$op="|=";}
+        ('^=' {$op="^";}
+        |'+=' {$op="+";}
+        |'-=' {$op="-";}
+        |'*=' {$op="*";}
+        |'/=' {$op="/";}
+        |'&=' {$op="&";}
+        |'|=' {$op="|";}
         |'=' {$op="=";}
-        |'>' '>' '=' {$op=">>=";}
-        |'>' '>' '>' '=' {$op=">>>=";}
-        |'<' '<' '=' {$op="<<=";}
-        |'%=' {$op="%=";}
+        |'>' '>' '=' {$op=">>";}
+        |'>' '>' '>' '=' {$op=">>>";}
+        |'<' '<' '=' {$op="<<";}
+        |'%=' {$op="%";}
         )
         e2=expression{
             if($e1.val != null && $e2.val != null){
                 $t = newTemp();
                 $val = $t;
-                if($op == "^="){
-                    print($t +" = "+$e1.val + " ^ " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == "+="){
-                    print($t +" = "+$e1.val + " + " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == "-="){
-                    print($t +" = "+$e1.val + " - " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == "*="){
-                    print($t +" = "+$e1.val + " * " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == "/="){
-                    print($t +" = "+$e1.val + " / " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == "&="){
-                    print($t +" = "+$e1.val + " & " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == "="){
-                    print($e1.val +" = "+ $e2.val);
+                if($op == "="){
+                    assign = new AssignmentScheme($e1.val,$e2.val);
+                    schema = new IntermediateScheme("a",assign,false,null);
+                    intermedList.add(schema);
+                    //print($e1.val +" = "+ $e2.val);
                     $val = $e1.val;
-                }else if($op == ">>="){
-                    print($t +" = "+$e1.val + " >> " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == ">>>="){
-                    print($t +" = "+$e1.val + " >>> " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == "<<="){
-                    print($t +" = "+$e1.val + " << " + $e2.val);
-                    print($e1.val +" = "+ $t);
-                }else if($op == "%="){
-                    print($t +" = "+$e1.val + " % " + $e2.val);
-                    print($e1.val +" = "+ $t);
+                }else{
+                    expressionScheme = new ExpressionScheme($t,$e1.val,$op,$e2.val);
+                    schema = new IntermediateScheme("e",expressionScheme,false,null);
+                    intermedList.add(schema);
+                    //print($t +" = "+$e1.val + $op + $e2.val);
+
+                    assign = new AssignmentScheme($e1.val,$t);
+                    schema = new IntermediateScheme("a",assign,false,null);
+                    intermedList.add(schema);
+                    //print($e1.val +" = "+ $t);
+                    $val = $e1.val;
                 }
             }
         }

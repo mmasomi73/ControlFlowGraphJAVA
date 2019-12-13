@@ -1,64 +1,72 @@
-'- compilationUnit
-   |- typeDeclaration
-   |  |- classOrInterfaceModifier
-   |  |  '- TOKEN[type: 10, text: public]
-   |  '- classDeclaration
-   |     |- TOKEN[type: 7, text: class]
-   |     |- TOKEN[type: 98, text: HelloWorld]
-   |     '- classBody
-   |        |- TOKEN[type: 20, text: {]
-   |        |- classBodyDeclaration
-   |        |  |- modifiers
-   |        |  |  |- modifier
-   |        |  |  |  '- TOKEN[type: 10, text: public]
-   |        |  |  '- modifier
-   |        |  |     '- TOKEN[type: 4, text: static]
-   |        |  '- member
-   |        |     |- TOKEN[type: 25, text: void]
-   |        |     |- TOKEN[type: 98, text: main]
-   |        |     |- formalParameters
-   |        |     |  |- TOKEN[type: 42, text: (]
-   |        |     |  |- formalParameterDecls
-   |        |     |  |  |- [684 679 437 416 411 388 277 256 227]
-   |        |     |  |  |  '- [684 679 437 416 411 388 277 256 227]
-   |        |     |  |  |- type
-   |        |     |  |  |  |- classOrInterfaceType
-   |        |     |  |  |  |  '- TOKEN[type: 98, text: String]
-   |        |     |  |  |  |- TOKEN[type: 23, text: []
-   |        |     |  |  |  '- TOKEN[type: 24, text: ]]
-   |        |     |  |  '- formalParameterDeclsRest
-   |        |     |  |     '- TOKEN[type: 98, text: args]
-   |        |     |  '- TOKEN[type: 43, text: )]
-   |        |     '- methodDeclarationRest
-   |        |        |- TOKEN[type: 20, text: {]
-   |        |        |- blockStatement
-   |        |        |  |- statementExpression
-   |        |        |  |  |- expression
-   |        |        |  |  |  '- TOKEN[type: 98, text: a]
-   |        |        |  |  |- TOKEN[type: 27, text: =]
-   |        |        |  |  '- expression
-   |        |        |  |     |- expression
-   |        |        |  |     |  |- expression
-   |        |        |  |     |  |  '- TOKEN[type: 98, text: n]
-   |        |        |  |     |  |- TOKEN[type: 18, text: >]
-   |        |        |  |     |  '- expression
-   |        |        |  |     |     '- TOKEN[type: 91, text: 10]
-   |        |        |  |     |- TOKEN[type: 40, text: ?]
-   |        |        |  |     |- expression
-   |        |        |  |     |  |- expression
-   |        |        |  |     |  |  |- expression
-   |        |        |  |     |  |  |  '- TOKEN[type: 98, text: z]
-   |        |        |  |     |  |  |- TOKEN[type: 69, text: +]
-   |        |        |  |     |  |  '- expression
-   |        |        |  |     |  |     '- TOKEN[type: 98, text: g]
-   |        |        |  |     |  |- TOKEN[type: 70, text: -]
-   |        |        |  |     |  '- expression
-   |        |        |  |     |     '- TOKEN[type: 91, text: 5]
-   |        |        |  |     |- TOKEN[type: 51, text: :]
-   |        |        |  |     '- expression
-   |        |        |  |        '- TOKEN[type: 91, text: 50]
-   |        |        |  '- TOKEN[type: 2, text: ;]
-   |        |        '- TOKEN[type: 21, text: }]
-   |        '- TOKEN[type: 21, text: }]
-   '- TOKEN[type: -1, text: <EOF>]
-
+t1 = 120 + x
+a = t1
+b = 5
+t4 = c * d
+t5 = b + t4
+t6 = e / f
+t7 = t5 - t6
+t8 = t7 + g
+t9 = h * i
+t10 = t9 * m
+t11 = t10 * n
+t12 = t8 + t11
+t13 = t12 + g
+t14 = t13 + r
+t15 = o + 1
+o = t15
+t16 = t14 + t15
+a = t16
+t18 = c + a
+c = t18
+t19 = b - 1
+b = t19
+t20 = z >> t19
+z = t20
+t21 = a > 5
+if NOT t21 goto l1
+t22 = a > 5
+if NOT t22 goto l2
+z = 5
+goto l3
+l2:
+z = 6
+l3:
+r = 5
+l1:
+i = 0
+l4:
+t27 = i < 10
+t28 = t27
+if NOT t28 goto l5
+t29 = i + 1
+i = t29
+z = 5
+goto l4
+l5:
+l6:
+t31 = i < 100
+if NOT t31 goto l7
+z = 5
+t33 = i + 1
+i = t33
+goto l6
+l7:
+l8:
+t34 = b + 1
+b = t34
+t35 = a + 1
+a = t35
+t36 = a < 100
+if NOT t36 goto l9
+goto l8
+l9:
+t37 = n > 10
+if NOT t37 goto l10
+t39 = z + g
+t40 = t39 - 5
+t38 = t40
+goto l11
+l10:
+t38 = 50
+l11:
+a = t38

@@ -1,6 +1,9 @@
 public class HelloWorld {
    public static void main(String[] args) {
-      /*a = b + c * d - e / f + g + h * i * m * n + g + r + ++o;
+
+      int a = 120 + x;
+      int b = 5;
+      a = b + c * d - e / f + g + h * i * m * n + g + r + ++o;
       c += a;
       z >>= b--;
 
@@ -26,7 +29,7 @@ public class HelloWorld {
         do{
             b++;
             a++;
-        }while (a < 100);*/
+        }while (a < 100);
 
         a = n>10?z + g -5 :50;
    }

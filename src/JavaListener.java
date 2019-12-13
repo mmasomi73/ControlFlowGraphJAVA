@@ -1,6 +1,11 @@
-// Generated from D:/University/Uni/term-1/Compiler/Project/Phase-01/grammer\Java.g4 by ANTLR 4.7.2
+// Generated from D:/University/Uni/term-1/Compiler/Project/Phase-03/grammer\Java.g4 by ANTLR 4.7.2
 
-import java.util.ArrayList;
+import intermediate.shcema.IntermediateScheme;
+import intermediate.shcema.IFStatementScheme;
+import intermediate.shcema.AssignmentScheme;
+import intermediate.shcema.ExpressionScheme;
+import intermediate.shcema.GoToScheme;
+import java.util.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
