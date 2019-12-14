@@ -1,3 +1,5 @@
+import intermediate.crawler.BlocksExtractor;
+import intermediate.crawler.LeadersExtractor;
 import intermediate.shcema.*;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -20,13 +22,24 @@ public class JavaGrammar {
         JavaLexer javaLexer = new JavaLexer(inputStream);  // generated Lexer With ANTLR4 Scan input CharStream make Lexer
         TokenStream tokenStream = new CommonTokenStream(javaLexer); // Give Token stream from lexer
         JavaParser javaParser = new JavaParser(tokenStream); // Pass Token stream to Generated Parser to Parse Tokens
-
         ParseTree parseTree = javaParser.compilationUnit();
-        // Get Parser result form compilationUnit grammar
         JavaParser.CompilationUnitContext result = javaParser.compilationUnit();
-        Visualizer visualizer = new Visualizer(parseTree); //Visualize the result of Parse tree
-        System.out.println("---------------------");
-        System.out.println(javaParser.intermedList.toString());
+
+        LeadersExtractor leaders = new LeadersExtractor(javaParser.intermedList);
+
+        BlocksExtractor blocks = new BlocksExtractor(javaParser.intermedList, leaders.getLeadersIndex());
+
+//        for (String s : leaders.getLeadersStatement()) {
+//
+//            System.out.print(s);
+//        }
+
+            System.out.print(blocks.toString());
+//        System.out.println("+---------------------------------------------+");
+//        System.out.println(leaders.getLeadersIndex().toString());
+//        System.out.println("\n+---------------------------------------------+");
+//        System.out.println(leaders.getLeadersStatement().toString());
+//        System.out.println("\n+---------------------------------------------+");
 
 
     }

@@ -25,4 +25,19 @@ public class IntermediateScheme {
         }
         return "\n\t\t" + this.iScheme.toString();
     }
+
+    public String toBlockString() {
+        if (this.iScheme == null && this.hasLabel){
+            return "|"+beautiLabel() + (this.label.length() < 3 ? " |   " : " |    " );
+        }
+        if (this.hasLabel){
+            return "|"+beautiLabel() + " | " + this.iScheme.toString();
+        }
+        return "|    | " + this.iScheme.toString();
+    }
+
+    private String beautiLabel(){
+        if (this.label.length() < 3) return this.label+ " ";
+        return this.label;
+    }
 }
