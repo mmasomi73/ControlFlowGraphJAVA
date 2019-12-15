@@ -80,4 +80,13 @@ public class BlocksExtractor {
         }
         return output.toString();
     }
+
+    public Block getWithLabel(String label){
+        for (Block block: blockList) {
+            if (block != null && block.getLabel() != null && label.equals(block.getLabel())){
+                return block;
+            }
+        }
+        return null;
+    }
 }

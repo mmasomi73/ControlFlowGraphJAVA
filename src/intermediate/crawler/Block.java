@@ -58,4 +58,19 @@ public class Block {
 
         return output.toString();
     }
+
+    public IntermediateScheme getLastStatement(){
+        return intermedList.get(intermedList.size() - 1);
+    }
+
+    public String getLabel(){
+        String label = null;
+
+        for (IntermediateScheme intermediateScheme:intermedList) {
+            if (intermediateScheme.hasLabel){
+                label = intermediateScheme.label;
+            }
+        }
+        return label;
+    }
 }

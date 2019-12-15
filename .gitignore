@@ -71,7 +71,7 @@ fabric.properties
 
 .idea/$PRODUCT_WORKSPACE_FILE$
 .idea/.gitignore
-.idea/Phase-01.iml
+.idea/Phase-03.iml
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
@@ -80,3 +80,4 @@ fabric.properties
 *.rar
 *.zip
 *.tmp
+/lib/*

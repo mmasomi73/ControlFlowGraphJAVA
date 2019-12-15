@@ -1,4 +1,5 @@
 import intermediate.crawler.BlocksExtractor;
+import intermediate.crawler.ControlFlowGraph;
 import intermediate.crawler.LeadersExtractor;
 import intermediate.shcema.*;
 import org.antlr.v4.runtime.CharStream;
@@ -29,18 +30,11 @@ public class JavaGrammar {
 
         BlocksExtractor blocks = new BlocksExtractor(javaParser.intermedList, leaders.getLeadersIndex());
 
-//        for (String s : leaders.getLeadersStatement()) {
-//
-//            System.out.print(s);
-//        }
+        ControlFlowGraph cfg = new ControlFlowGraph(blocks);
 
-            System.out.print(blocks.toString());
-//        System.out.println("+---------------------------------------------+");
-//        System.out.println(leaders.getLeadersIndex().toString());
-//        System.out.println("\n+---------------------------------------------+");
-//        System.out.println(leaders.getLeadersStatement().toString());
-//        System.out.println("\n+---------------------------------------------+");
 
+//        System.out.print(blocks.toString());
+        System.out.print(cfg.toString());
 
     }
 
