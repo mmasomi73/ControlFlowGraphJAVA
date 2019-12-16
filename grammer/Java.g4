@@ -30,9 +30,6 @@ import java.util.*;
      String newTemp(){
             return "t"+ ++temp;
         }
-    void print(String s){
-        System.out.println(s);
-    }
 
     IntermediateScheme schema;
     AssignmentScheme assign;
@@ -481,7 +478,6 @@ statement returns [String val] locals [String l1,String l2,boolean exi]
             ifStatementScheme = new IFStatementScheme($parExpression.val,$l1,true);
             schema = new IntermediateScheme("i",ifStatementScheme,false,null);
             intermedList.add(schema);
-            //print("if NOT " + $parExpression.val +" goto "+$l1);
         } statement ('else' {
             $exi = true;
             $l2 = newLabel();
@@ -489,16 +485,13 @@ statement returns [String val] locals [String l1,String l2,boolean exi]
             gotoScheme = new GoToScheme($l2);
             schema = new IntermediateScheme("g",gotoScheme,false,null);
             intermedList.add(schema);
-            //print("goto "+$l2);
 
             schema = new IntermediateScheme("l",null,true,$l1);
             intermedList.add(schema);
-            //print($l1+":");
         } statement {
 
                 schema = new IntermediateScheme("l",null,true,$l2);
                 intermedList.add(schema);
-               // print($l2+":");
 
             })?{
             if(! $exi){
@@ -506,7 +499,6 @@ statement returns [String val] locals [String l1,String l2,boolean exi]
 
                     schema = new IntermediateScheme("l",null,true,$l1);
                     intermedList.add(schema);
-                    //print($l1+":");
 
                 }
             }
@@ -517,11 +509,9 @@ statement returns [String val] locals [String l1,String l2,boolean exi]
                 gotoScheme = new GoToScheme($f.l_start);
                 schema = new IntermediateScheme("g",gotoScheme,false,null);
                 intermedList.add(schema);
-                //print("goto " + $f.l_start);
 
                 schema = new IntermediateScheme("l",null,true,$f.l_end);
                 intermedList.add(schema);
-                //print($f.l_end+":");
             }
         }
     |   'while'{
@@ -530,22 +520,18 @@ statement returns [String val] locals [String l1,String l2,boolean exi]
 
            schema = new IntermediateScheme("l",null,true,$l1);
            intermedList.add(schema);
-           //print($l1+":");
 
        } parExpression{
             ifStatementScheme = new IFStatementScheme($parExpression.val,$l2,true);
             schema = new IntermediateScheme("i",ifStatementScheme,false,null);
             intermedList.add(schema);
-            //print("if NOT " + $parExpression.val +" goto "+$l2);
        } statement {
            gotoScheme = new GoToScheme($l1);
            schema = new IntermediateScheme("g",gotoScheme,false,null);
            intermedList.add(schema);
-           //print("goto "+$l1);
 
            schema = new IntermediateScheme("l",null,true,$l2);
            intermedList.add(schema);
-           //print($l2+":");
        }
     |   'do' {
             $l1 = newLabel();
@@ -553,22 +539,18 @@ statement returns [String val] locals [String l1,String l2,boolean exi]
 
             schema = new IntermediateScheme("l",null,true,$l1);
             intermedList.add(schema);
-            //print($l1+":");
 
     } statement 'while' parExpression {
          ifStatementScheme = new IFStatementScheme($parExpression.val,$l2,true);
          schema = new IntermediateScheme("i",ifStatementScheme,false,null);
          intermedList.add(schema);
-         //print("if NOT " + $parExpression.val +" goto "+$l2);
 
          gotoScheme = new GoToScheme($l1);
          schema = new IntermediateScheme("g",gotoScheme,false,null);
          intermedList.add(schema);
-         //print("goto "+$l1);
 
          schema = new IntermediateScheme("l",null,true,$l2);
          intermedList.add(schema);
-         //print($l2+":");
      } ';'
     |   'try' block
         ( catches 'finally' block
@@ -618,7 +600,6 @@ forControl returns [String val, String l_start,String l_end] locals [String l1,S
 
             schema = new IntermediateScheme("l",null,true,$l1);
             intermedList.add(schema);
-            //print($l1+":");
 
         } (e=expression{
             $exi = true;
@@ -630,12 +611,10 @@ forControl returns [String val, String l_start,String l_end] locals [String l1,S
                 assign = new AssignmentScheme($t1,$e.val);
                 schema = new IntermediateScheme("a",assign,false,null);
                 intermedList.add(schema);
-                //print($t1 + " = "+$e.val);
 
                 ifStatementScheme = new IFStatementScheme($t1,$l2,true);
                 schema = new IntermediateScheme("i",ifStatementScheme,false,null);
                 intermedList.add(schema);
-                //print("if NOT "+$t1+" goto "+ $l2);
             }
             })? {
                 if(! $exi){
@@ -645,7 +624,6 @@ forControl returns [String val, String l_start,String l_end] locals [String l1,S
                     ifStatementScheme = new IFStatementScheme("FALSE",$l2,false);
                     schema = new IntermediateScheme("i",ifStatementScheme,false,null);
                     intermedList.add(schema);
-                    //print("if FALSE "+$t1+" goto "+ $l2);
                 }
             }';' forUpdate?
     ;
@@ -699,23 +677,19 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                   expressionScheme = new ExpressionScheme($val,$e.val,"+","1");
                   schema = new IntermediateScheme("e",expressionScheme,false,null);
                   intermedList.add(schema);
-                  //print($val +" = "+ $e.val + " + " + 1);
 
                   assign = new AssignmentScheme($e.val,$val);
                   schema = new IntermediateScheme("a",assign,false,null);
                   intermedList.add(schema);
-                  //print($e.val +" = "+ $val);
                 }else if($op == "--"){
 
                   expressionScheme = new ExpressionScheme($val,$e.val,"-","1");
                   schema = new IntermediateScheme("e",expressionScheme,false,null);
                   intermedList.add(schema);
-                  //print($val +" = "+ $e.val + " - " + 1);
 
                   assign = new AssignmentScheme($e.val,$val);
                   schema = new IntermediateScheme("a",assign,false,null);
                   intermedList.add(schema);
-                  //print($e.val +" = "+ $val);
                 }
            }
       }
@@ -729,32 +703,26 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                     expressionScheme = new ExpressionScheme($val,$e.val,"*","-1");
                     schema = new IntermediateScheme("e",expressionScheme,false,null);
                     intermedList.add(schema);
-                    //print($val +" = "+ $e.val + " * -1");
 
                     assign = new AssignmentScheme($e.val,$val);
                     schema = new IntermediateScheme("a",assign,false,null);
                     intermedList.add(schema);
-                    //print($e.val +" = "+ $val);
                  }else if($op == "++"){
                     expressionScheme = new ExpressionScheme($val,$e.val,"+","1");
                     schema = new IntermediateScheme("e",expressionScheme,false,null);
                     intermedList.add(schema);
-                    //print($val +" = "+ $e.val + " + " + 1);
 
                     assign = new AssignmentScheme($e.val,$val);
                     schema = new IntermediateScheme("a",assign,false,null);
                     intermedList.add(schema);
-                    //print($e.val +" = "+ $val);
                   }else if($op == "--"){
                     expressionScheme = new ExpressionScheme($val,$e.val,"-","1");
                     schema = new IntermediateScheme("e",expressionScheme,false,null);
                     intermedList.add(schema);
-                    //print($val +" = "+ $e.val + " - " + 1);
 
                     assign = new AssignmentScheme($e.val,$val);
                     schema = new IntermediateScheme("a",assign,false,null);
                     intermedList.add(schema);
-                    //print($e.val +" = "+ $val);
                   }
              }
         }
@@ -770,7 +738,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                  expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
                  schema = new IntermediateScheme("e",expressionScheme,false,null);
                  intermedList.add(schema);
-                 //print($val +" = "+$e1.val + $op + $e2.val);
              }
        }
     |   e1=expression ('+'{$op=" + ";}|'-'{$op=" - ";}) e2=expression{
@@ -781,7 +748,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                  expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
                  schema = new IntermediateScheme("e",expressionScheme,false,null);
                  intermedList.add(schema);
-                 //print($t +" = "+$e1.val + $op + $e2.val);
              }
         }
     |   e1=expression ('<' '<' {$op=" << ";}| '>' '>' '>' {$op=" >>> ";}| '>' '>' {$op=" >> ";}) e2=expression{
@@ -792,7 +758,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                   expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
                   schema = new IntermediateScheme("e",expressionScheme,false,null);
                   intermedList.add(schema);
-                  //print($val+" = "+$e1.val + $op + $e2.val);
               }
 
           }
@@ -804,7 +769,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                 expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
                 schema = new IntermediateScheme("e",expressionScheme,false,null);
                 intermedList.add(schema);
-                //print($val+" = "+$e1.val + $op + $e2.val);
             }
 
         }
@@ -817,7 +781,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                     expressionScheme = new ExpressionScheme($val,$e1.val,$op,$e2.val);
                     schema = new IntermediateScheme("e",expressionScheme,false,null);
                     intermedList.add(schema);
-                    //print($t +" = "+$e1.val + $op + $e2.val);
                 }
             }
     |   e1=expression '&' e2=expression {
@@ -828,7 +791,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                 expressionScheme = new ExpressionScheme($val,$e1.val,"&",$e2.val);
                 schema = new IntermediateScheme("e",expressionScheme,false,null);
                 intermedList.add(schema);
-                //print($t +" = "+$e1.val + " & " + $e2.val);
             }
         }
     |   e1 = expression '^' e2 = expression{
@@ -838,7 +800,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
              expressionScheme = new ExpressionScheme($val,$e1.val,"^",$e2.val);
              schema = new IntermediateScheme("e",expressionScheme,false,null);
              intermedList.add(schema);
-             //print($t +" = "+$e1.val + " ^ " + $e2.val);
          }
      }
     |   e1 = expression '|' e2 = expression{
@@ -849,7 +810,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
               expressionScheme = new ExpressionScheme($val,$e1.val,"|",$e2.val);
               schema = new IntermediateScheme("e",expressionScheme,false,null);
               intermedList.add(schema);
-              //print($t +" = "+$e1.val + " | " + $e2.val);
           }
       }
     |   e1 = expression '&&' e2 = expression{
@@ -860,7 +820,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
             expressionScheme = new ExpressionScheme($val,$e1.val,"&&",$e2.val);
             schema = new IntermediateScheme("e",expressionScheme,false,null);
             intermedList.add(schema);
-            //print($t +" = "+$e1.val + " && " + $e2.val);
         }
      }
     |   e1 = expression '||' e2 = expression{
@@ -871,7 +830,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
               expressionScheme = new ExpressionScheme($val,$e1.val,"||",$e2.val);
               schema = new IntermediateScheme("e",expressionScheme,false,null);
               intermedList.add(schema);
-              //print($t +" = "+$e1.val + " || " + $e2.val);
           }
       }
     |   e1=expression {
@@ -882,7 +840,6 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
               ifStatementScheme = new IFStatementScheme($e1.val,$l1,true);
               schema = new IntermediateScheme("i",ifStatementScheme,false,null);
               intermedList.add(schema);
-              //print("if NOT " + $e1.val +" goto "+ $l1);
           }
     } '?' e2=expression {
             if($e1.val != null && $e2.val != null ){
@@ -891,16 +848,13 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                 assign = new AssignmentScheme($t,$e2.val);
                 schema = new IntermediateScheme("a",assign,false,null);
                 intermedList.add(schema);
-                //print($t + " = " +$e2.val);
 
                 gotoScheme = new GoToScheme($l2);
                 schema = new IntermediateScheme("g",gotoScheme,false,null);
                 intermedList.add(schema);
-                //print("goto "+$l2);
 
                 schema = new IntermediateScheme("l",null,true,$l1);
                 intermedList.add(schema);
-                //print($l1+":");
                 $val = $t;
             }
 
@@ -910,12 +864,10 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
             assign = new AssignmentScheme($t,$e3.val);
             schema = new IntermediateScheme("a",assign,false,null);
             intermedList.add(schema);
-            //print($t + " = " +$e3.val);
             $val = $t;
 
             schema = new IntermediateScheme("l",null,true,$l2);
             intermedList.add(schema);
-            //print($l2+":");
         }
 
         }
@@ -941,18 +893,15 @@ expression returns [String val] locals [String op,String t,String l1,String l2]
                     assign = new AssignmentScheme($e1.val,$e2.val);
                     schema = new IntermediateScheme("a",assign,false,null);
                     intermedList.add(schema);
-                    //print($e1.val +" = "+ $e2.val);
                     $val = $e1.val;
                 }else{
                     expressionScheme = new ExpressionScheme($t,$e1.val,$op,$e2.val);
                     schema = new IntermediateScheme("e",expressionScheme,false,null);
                     intermedList.add(schema);
-                    //print($t +" = "+$e1.val + $op + $e2.val);
 
                     assign = new AssignmentScheme($e1.val,$t);
                     schema = new IntermediateScheme("a",assign,false,null);
                     intermedList.add(schema);
-                    //print($e1.val +" = "+ $t);
                     $val = $e1.val;
                 }
             }
