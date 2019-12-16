@@ -36,6 +36,16 @@ public class IntermediateScheme {
         return "|    | " + this.iScheme.toString();
     }
 
+    public String toDiagramString() {
+        if (this.iScheme == null && this.hasLabel){
+            return beautiLabel();
+        }
+        if (this.hasLabel){
+            return beautiLabel() + ":"+this.iScheme.toString();
+        }
+        return  this.iScheme.toString();
+    }
+
     private String beautiLabel(){
         if (this.label.length() < 3) return this.label+ " ";
         return this.label;

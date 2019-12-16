@@ -56,7 +56,8 @@ public class Block {
         }
         output.append(border.toString());
 
-        return output.toString();
+//        return output.toString();
+        return toDiagramString();
     }
 
     public IntermediateScheme getLastStatement(){
@@ -72,5 +73,19 @@ public class Block {
             }
         }
         return label;
+    }
+
+    public String toDiagramString() {
+        StringBuilder output = new StringBuilder();
+
+        output.append(name);
+        output.append("\n");
+
+        for (int i = 0; i < this.intermedList.size(); i++) {
+            output.append(this.intermedList.get(i).toDiagramString());
+            output.append("\n");
+        }
+
+        return output.toString();
     }
 }
