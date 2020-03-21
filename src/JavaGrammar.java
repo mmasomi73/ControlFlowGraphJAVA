@@ -2,10 +2,8 @@ import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.mxParallelEdgeLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
-import intermediate.crawler.BlocksExtractor;
-import intermediate.crawler.ControlFlowGraph;
-import intermediate.crawler.LeadersExtractor;
-import intermediate.crawler.Visualizer;
+import intermediate.crawler.*;
+import intermediate.optimizer.ReachingDefs.ReachingDefs;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -15,6 +13,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.List;
 
 
 public class JavaGrammar extends JFrame{
@@ -36,6 +35,11 @@ public class JavaGrammar extends JFrame{
         ControlFlowGraph cfg = new ControlFlowGraph(blocks);
 
         Visualizer visualizer = new Visualizer(cfg);
+
+        ReachingDefs reachingDefs = new ReachingDefs(cfg);
+        List<Block> allBlocks = reachingDefs.run();
+
+
 
     }
 

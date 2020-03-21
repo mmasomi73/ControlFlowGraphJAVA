@@ -13,7 +13,7 @@ import java.util.List;
 public class ControlFlowGraph {
 
     private Multimap<String, String> edges = ArrayListMultimap.create();
-    private Graph<Block, DefaultEdge> cfg = new DirectedPseudograph<>(DefaultEdge.class);
+    private Graph<Block, Edges> cfg = new DirectedPseudograph<>(Edges.class);
 
     private List<Block> blockList;
     private BlocksExtractor blocks;
@@ -71,9 +71,12 @@ public class ControlFlowGraph {
         return st.toString();
     }
 
-    public Graph<Block, DefaultEdge> getCFG() {
+    public Graph<Block, Edges> getCFG() {
         this.findFlow();
         return cfg;
     }
 
+    public List<Block> getBlockList() {
+        return blockList;
+    }
 }

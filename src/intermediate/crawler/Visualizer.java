@@ -24,7 +24,7 @@ public class Visualizer extends JFrame {
 
     public Visualizer(ControlFlowGraph cfg)
     {
-        JGraphXAdapter<Block, DefaultEdge> graph = new JGraphXAdapter<Block, DefaultEdge>(cfg.getCFG());
+        JGraphXAdapter<Block, Edges> graph = new JGraphXAdapter<Block, Edges>(cfg.getCFG());
         mxGraphComponent graphComponent = new mxGraphComponent(graph);
 
         graph.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL, "1");
@@ -33,9 +33,11 @@ public class Visualizer extends JFrame {
         layout.execute(graph.getDefaultParent());
 
         getContentPane().add(graphComponent, BorderLayout.CENTER);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(400, 320);
         this.setVisible(true);
+        this.setTitle("Control Flow Graph");
+
 
         try {
             String filename = System.getProperty("user.dir") + "\\CFG.png";

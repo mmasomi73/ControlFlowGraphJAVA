@@ -18,23 +18,25 @@ public class BlocksExtractor {
         this.intermedList = intermedList;
     }
 
+    //TODO: ReCode to split arrays [^_^]
     private void detectBlock(){
         int blName = 0;
         boolean first = true;
         int lastLeader = this.getLeader() , nextLeader = this.getLeader();
-        Block block = new Block("B"+ blName);
+
+        Block block = new Block("B"+ (blName > 9 ?blName :"0"+blName));
         for (int i = 0; i < this.intermedList.size() ; i++) {
             if (lastLeader == i && first){
                 first = false;
-                block = new Block("B"+ ++blName);
+                block = new Block("B"+ (++blName > 9 ?blName :"0"+blName));
                 blockList.add(block);
                 block.Add(this.intermedList.get(i));
             }
-            if (nextLeader > i &&  (lastLeader < i || !first)){
+            else if (nextLeader > i &&  (lastLeader < i || !first)){
                 first = false;
                 block.Add(this.intermedList.get(i));
             }else{
-                block = new Block("B"+ ++blName);
+                block = new Block("B"+ (++blName > 9 ?blName :"0"+blName));
                 blockList.add(block);
                 block.Add(this.intermedList.get(i));
                 first = false;

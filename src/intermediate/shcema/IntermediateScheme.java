@@ -1,6 +1,13 @@
 package intermediate.shcema;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class IntermediateScheme {
+
+    private static final AtomicInteger count = new AtomicInteger(0);
+    private int ID;
 
     public String type = null;
     public String label = null;
@@ -8,6 +15,7 @@ public class IntermediateScheme {
     public IScheme iScheme = null;
 
     public IntermediateScheme(String type, IScheme iScheme, boolean hasLabel, String label) {
+        ID = count.incrementAndGet();
 
         this.type = type;
         this.label = label;
@@ -49,5 +57,14 @@ public class IntermediateScheme {
     private String beautiLabel(){
         if (this.label.length() < 3) return this.label+ " ";
         return this.label;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public List<String> getVariables() {
+        if (iScheme == null) return new ArrayList<String>();
+        return iScheme.getVariables();
     }
 }

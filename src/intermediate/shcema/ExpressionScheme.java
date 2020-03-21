@@ -1,5 +1,8 @@
 package intermediate.shcema;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExpressionScheme implements IScheme {
 
     private String leftValue = null;
@@ -33,5 +36,17 @@ public class ExpressionScheme implements IScheme {
             return this.leftValue + " = " + this.operand_1 + " "+ this.operator + " "+ this.operand_2;
         }
         return null;
+    }
+
+    @Override
+    public List<String> getVariables() {
+        List<String> list = new ArrayList<>();
+        if ( this.leftValue != null &&  this.operand_1 != null &&
+                this.operator != null &&  this.operand_2 != null){
+            list.add(this.leftValue);
+            list.add(this.operand_1);
+            list.add(this.operand_2);
+        }
+        return list;
     }
 }

@@ -1,5 +1,8 @@
 package intermediate.shcema;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GoToScheme implements IScheme {
 
     private String label = null;
@@ -24,5 +27,10 @@ public class GoToScheme implements IScheme {
             return "goto "+ this.label;
         }
         return null;
+    }
+
+    @Override
+    public List<String> getVariables() {
+        return new ArrayList<>();
     }
 }

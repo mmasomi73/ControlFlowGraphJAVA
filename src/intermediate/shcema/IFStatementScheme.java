@@ -1,5 +1,8 @@
 package intermediate.shcema;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IFStatementScheme implements IScheme {
 
     private String condition = null;
@@ -29,5 +32,10 @@ public class IFStatementScheme implements IScheme {
             return "if " + this.condition + " goto "+ this.label;
         }
         return null;
+    }
+
+    @Override
+    public List<String> getVariables() {
+        return new ArrayList<>();
     }
 }
