@@ -55,11 +55,11 @@ public class ReachingDefs {
         }
 
 
-//        ReachingDefsForm dialog = new ReachingDefsForm(blocks);
-//        dialog.pack();
-//        dialog.setVisible(true);
-//        dialog.setEnabled(true);
-//        dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ReachingDefsForm dialog = new ReachingDefsForm(blocks,graph);
+        dialog.pack();
+        dialog.setVisible(true);
+        dialog.setEnabled(true);
+        dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         return blocks;
     }
@@ -86,7 +86,7 @@ public class ReachingDefs {
             BitVectors inBlock = block.getIN();
             BitVectors outBlk = blk.getSource().getOUT();
             for (Map.Entry<Integer, BitVector> bitVector:outBlk.sort().entrySet()) {
-                inBlock.union(bitVector.getValue().getStatement(),false);
+                inBlock.union(bitVector.getValue().getStatement(),bitVector.getValue().getValue());
             }
         }
         return block;

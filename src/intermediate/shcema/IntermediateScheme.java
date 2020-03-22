@@ -53,6 +53,15 @@ public class IntermediateScheme {
         }
         return  this.iScheme.toString();
     }
+    public String toFormString() {
+        if (this.iScheme == null && this.hasLabel){
+            return beautiLabel()+":";
+        }
+        if (this.hasLabel){
+            return beautiLabel() + ":"+this.iScheme.toString()+"\n";
+        }
+        return  "\t"+this.iScheme.toString()+"\n";
+    }
 
     private String beautiLabel(){
         if (this.label.length() < 3) return this.label+ " ";

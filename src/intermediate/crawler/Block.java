@@ -99,6 +99,18 @@ public class Block {
         return output.toString();
     }
 
+    public String toFormString() {
+        StringBuilder output = new StringBuilder();
+
+        output.append("Block:[").append(name).append("]");
+        output.append("\n──────────────\n");
+
+        for (int i = 0; i < this.intermedList.size(); i++) {
+            output.append(this.intermedList.get(i).toFormString());
+        }
+
+        return output.toString();
+    }
 
     //----------------------------------------------------------------------=
 
@@ -210,5 +222,13 @@ public class Block {
 
         System.out.println("-----=KILL");
         KILL.showVector();
+    }
+
+    public String getOutVector(){
+        return OUT.getBits();
+    }
+
+    public String getInVector(){
+        return IN.getBits();
     }
 }

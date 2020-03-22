@@ -38,13 +38,13 @@ public class BitVectors {
     public void change(IntermediateScheme statement, boolean value) {
 
         boolean find = false;
-        for (Map.Entry<Integer, BitVector> entry:bitVector.entrySet()) {
-            if (entry.getValue().getStatement().getID() == statement.getID()){
+        for (Map.Entry<Integer, BitVector> entry : bitVector.entrySet()) {
+            if (entry.getValue().getStatement().getID() == statement.getID()) {
                 entry.getValue().setValue(value);
                 find = true;
             }
         }
-        if (!find){
+        if (!find) {
             System.err.println("╔═══════════════════════════════╗");
             System.err.println("║Error in Find Bit in Bit Vector║");
             System.err.println("║CLASS {Bit vector} : LINE {44} ║");
@@ -75,13 +75,13 @@ public class BitVectors {
     public void union(IntermediateScheme statement, boolean value) {
 
         boolean find = false;
-        for (Map.Entry<Integer, BitVector> entry:bitVector.entrySet()) {
-            if (entry.getValue().getStatement().getID() == statement.getID()){
+        for (Map.Entry<Integer, BitVector> entry : bitVector.entrySet()) {
+            if (entry.getValue().getStatement().getID() == statement.getID()) {
                 entry.getValue().setValue(value || entry.getValue().getValue());
                 find = true;
             }
         }
-        if (!find){
+        if (!find) {
             System.err.println("╔═══════════════════════════════╗");
             System.err.println("║Error in Find Bit in Bit Vector║");
             System.err.println("║CLASS {Bit vector} : LINE {88} ║");
@@ -141,6 +141,82 @@ public class BitVectors {
 //                System.out.println(entry.getValue().getStatement().toString().replace("\n", "").replace("\t", "") + " → "+entry.getValue().getBlock());
 //            }
 //        }
+    }
+
+    public String getVector() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        TreeMap<Integer, BitVector> sorted = sort();
+
+        stringBuilder.append("┌");
+        for (Map.Entry<Integer, BitVector> entry : sorted.entrySet()) {
+            if (String.valueOf(entry.getKey()).length() > 1)
+                stringBuilder.append("──┬");
+            else
+                stringBuilder.append("─┬");
+        }
+        stringBuilder.append("┐\n");
+
+        //----------------------------------------------------------
+        for (Map.Entry<Integer, BitVector> entry : sorted.entrySet()) {
+            stringBuilder.append("│").append(entry.getKey());
+        }
+        stringBuilder.append("││\n");
+        for (Map.Entry<Integer, BitVector> entry : sorted.entrySet()) {
+            if (String.valueOf(entry.getKey()).length() > 1)
+                stringBuilder.append("│").append(entry.getValue().getValue(0)).append(" ");
+            else
+                stringBuilder.append("│").append(entry.getValue().getValue(0));
+        }
+        //----------------------------------------------------------
+        stringBuilder.append("││\n");
+        stringBuilder.append("└");
+        for (Map.Entry<Integer, BitVector> entry : sorted.entrySet()) {
+            if (String.valueOf(entry.getKey()).length() > 1)
+                stringBuilder.append("──┴");
+            else
+                stringBuilder.append("─┴");
+        }
+        stringBuilder.append("┘");
+
+        return stringBuilder.toString();
+    }
+
+    public String getVectorHelp() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        TreeMap<Integer, BitVector> sorted = sort();
+
+        for (Map.Entry<Integer, BitVector> entry : sorted.entrySet()) {
+            if (String.valueOf(entry.getKey()).length() > 1) {
+
+                stringBuilder.append("│ " + entry.getKey() + "│ ");
+                stringBuilder.append(entry.getValue().getStatement().toString().replace("\n", "").replace("\t", "") + " → " + entry.getValue().getBlock()+"\n");
+            } else {
+
+                stringBuilder.append("│ " + entry.getKey() + " │ ");
+                stringBuilder.append(entry.getValue().getStatement().toString().replace("\n", "").replace("\t", "") + " → " + entry.getValue().getBlock()+"\n");
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public String getBits() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        TreeMap<Integer, BitVector> sorted = sort();
+
+        //----------------------------------------------------------
+        for (Map.Entry<Integer, BitVector> entry : sorted.entrySet()) {
+            if (String.valueOf(entry.getKey()).length() > 1)
+                stringBuilder.append(entry.getValue().getValue(0));
+            else
+                stringBuilder.append(entry.getValue().getValue(0));
+        }
+        //----------------------------------------------------------
+
+        return stringBuilder.toString();
     }
 
     @Override
