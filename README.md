@@ -6,18 +6,38 @@
 | v13.0.1 | Java |  
 | V4.7.2 | ANTLR |  
   
+  <p dir='rtl' align='right'>
 کدها به دلیل سیستم بلاکینگ ایمیل در ریپازیتوری زیر کامیت گردیده است.  
+    </p>
   
 https://github.com/mmasomi73/ControlFlowGraphJAVA  
   
+<p dir='rtl' align='right'>
 برای این فاز از چندین پکیج آماده جهت ذخیره سازی و ترسیم گرافیکی گراف کنترلی استفاده گردیده که از قرار زیر می‌باشد.  
+  </p>
   
 
-|    |
-|--|
-|   |
+    commons-lang3-3.8.1.jar  
+    commons-text-1.5.jar  
+    fastutil-8.2.2.jar  
+    guava-26.0-jre.jar  
+    jetty-6.1.1.jar  
+    jetty-util-6.1.1.jar  
+    jgrapht-bundle-1.3.0.jar  
+    jgrapht-core-1.3.0.jar  
+    jgrapht-demo-1.3.0.jar  
+    jgrapht-ext-1.3.0.jar  
+    jgrapht-guava-1.3.0.jar  
+    jgrapht-io-1.3.0.jar  
+    jgrapht-opt-1.3.0.jar  
+    jgraphx-3.4.1.3.jar  
+    jheaps-0.9.jar  
+    junit-4.7.jar  
+    mxPdf.jar  
+    servlet-api-2.5-6.1.1.jar
 
-    <p dir='rtl' align='right'>
+  
+<p dir='rtl' align='right'>
 در این فاز از پروژه الگوریتم Reaching Definitions پیاده سازی شده است. این الگوریتم در پکیج و زیر پوشه زیر قرار دارد. این کلاس دارای دو کلاس کمکی جهت پیاده سازی با نام‌های BitVector و BitVectors می‌باشد که عملکرد bit vector را شبیه سازی می‌کنند. در این الگوریتم برای هر بلاک مجموعه‌های IN, OUT, KILL و GEN اضافه گردیده است.  
   </p>
   
